@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+    <script type='text/javascript'>
+
+	var context = {};
+
+	function updateChatLog()
+	{
+ 
+	document.getElementById("history").value = "Feedback sent";
+	document.getElementById("text").value = "";
+
+		
+	}
+
+function sendMessage()
+{
+
+var text = document.getElementById("text").value;
+
+var payload = {};
+
+if(text)
+    { 
+	payload.input = {"text" : text};
+	 };
+
+if(context)
+	{
+		payload.context = context;
+	};
+
+updateChatLog();
+
+var xhr = new XMLHttpRequest();
+
+xhr.onreadystatechange = function()
+{
+if(xhr.readyState == 4) {
+if(xhr.status == 200){
+
+}
+}
+}
+xhr.open("POST","./feedback", true);
+xhr.setRequestHeader("Content-type", "application/json");
+xhr.send(JSON.stringify(payload));
+}
+
+</script>
+  </head>
+  <body>
+    <p/>
+<div><b>BitBot Feedback Form</b></div>
+<p/><div>Enter feedback text to be sent anonymously</div>
+<div><input type="text" id="text" name="text" size="100" /> 
+<button class="btn btn-primary" onclick="sendMessage(); return false;">Send</button></div>
+<p/><div id="history"></div>
+
+  </body>
+</html>

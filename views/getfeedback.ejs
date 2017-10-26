@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script type='text/javascript'>
+function send()
+{
+
+var xhr = new XMLHttpRequest();
+
+xhr.onreadystatechange = function()
+{
+if(xhr.readyState == 4) {
+if(xhr.status == 200){
+
+  var json = JSON.parse(xhr.responseText);
+	
+	json.forEach(function(j){
+    var div = document.createElement('div');
+    div.innerHTML = '<b>' + 'Feedbacks:' + '</b>:' + j.feedback;
+	document.getElementById("feeds").appendChild(div);
+});
+
+
+}
+}
+}
+xhr.open("POST","./getfeedback", true);
+xhr.setRequestHeader("Content-type", "application/json");
+
+}
+
+function init()
+{
+  send();
+}
+</script>
+  </head>
+  <body onLoad="init()"  class="jumbotron">
+<div><b>Feedback from all Students </b></div>
+<p/>
+<div id="feeds">
+ </div>
+  </body>
+</html>

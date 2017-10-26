@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type='text/javascript'>
+
+	var context = {};
+
+	function updateChatLog(user,message)
+	{
+ 	if(message)
+ 	{
+    	var div = document.createElement('div');
+    	div.innerHTML = '<b>' + user + '</b>:' + message;
+	document.getElementById("history").appendChild(div);
+	document.getElementById("text").value = "";
+
+	}	
+	}
+
+function sendMessage()
+{
+var text = document.getElementById("text").value;
+updateChatLog("You", text);
+
+var payload = {};
+
+if(text)
+    { 
+	payload.input = {"text" : text};
+	 };
+
+if(context)
+	{
+		payload.context = context;
+	};
+
+var xhr = new XMLHttpRequest();
+
+xhr.onreadystatechange = function()
+{
+if(xhr.readyState == 4) {
+if(xhr.status == 200){
+var json = JSON.parse(xhr.responseText);
+context = json.context;
+updateChatLog("Watson", json.output.text);
+}
+}
+}
+xhr.open("POST","./conv", true);
+xhr.setRequestHeader("Content-type", "application/json");
+xhr.send(JSON.stringify(payload));
+}
+
+function init()
+{
+document.getElementById("text").addEventListener("keydown" , function(e)
+{
+  if(!e) { 
+  	var e = window.event;
+  }
+   if(e.KeyCode == 13) {
+   	sendMessage();
+   }
+} ,false);
+
+sendMessage();
+}
+</script>
+  </head>
+  <body onload = "init()">
+    <p/>
+<div><b>BitBot Conversation</b></div>
+<p/><div>Enter text to be send to Watson</div>
+<div><input type="text" id="text" name="text" size="50" /> 
+<button onclick="sendMessage()">Send</button></div>
+<p/><div><b>Conversation History</b></div>
+<p/><div id="history" ></div>
+
+  </body>
+</html>
