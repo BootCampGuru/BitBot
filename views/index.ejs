@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script type='text/javascript'>
 
 	var context = {};
@@ -10,8 +11,22 @@
  	if(message)
  	{
     	var div = document.createElement('div');
+      var p = document.createElement('p');
+      if(user == "Watson")
+      {
+      div.style.backgroundColor = 'white';
+      div.style.borderRadius  = '10px';
+      div.style.padding = "10px";
+      }
+      else
+      {
+        div.style.backgroundColor = 'white';
+        div.style.borderRadius  = '10px';
+        div.style.padding = "10px";
+      }
     	div.innerHTML = '<b>' + user + '</b>:' + message;
 	document.getElementById("history").appendChild(div);
+  document.getElementById("history").appendChild(p);
 	document.getElementById("text").value = "";
 
 	}	
@@ -68,13 +83,14 @@ sendMessage();
 </script>
   </head>
   <body onload = "init()">
-    <p/>
-<div><b>BitBot Conversation</b></div>
-<p/><div>Enter text to be send to Watson</div>
-<div><input type="text" id="text" name="text" size="50" /> 
-<button onclick="sendMessage()">Send</button></div>
-<p/><div><b>Conversation History</b></div>
-<p/><div id="history" ></div>
+<div  class="col-md-12 jumbotron">
+<div class="col-md-12 offset-md-1" style="color:orange; font-size:26px; background-color:#153260">Welcome to our Boot Camp! You can say Hi to me and start your conversation</div>
 
+<div class="col-md-10 offset-md-5"><input type="text" id="text" name="text" size="100" /> 
+<button  class="btn btn-primary"  onclick="sendMessage()">Send</button></div>
+<div  class="col-md-12"><img src="/images/dictation-icon.png" style="height:50; width:50"></div>
+<div class="col-md-12" style="color:orange; font-size:26px; background-color:#153260"><b>Conversation History</b></div>
+<p/><div style="border:1px;border-radius:10px;" class="col-md-12" id="history" ></div>
+</div>
   </body>
 </html>

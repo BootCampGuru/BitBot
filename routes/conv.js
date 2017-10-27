@@ -88,8 +88,12 @@ function insertNewStudent(conversationid)
 router.post('/', jsonParser, function(req, res,next)
 {
 
+ var addLink = "";
+
+
   if(req.body.input.text == "")
     return;
+
 
 console.log(JSON.stringify(req.body.input.text));
 
@@ -103,12 +107,28 @@ if(req.body.input.text === "new student" || req.body.input.text === "newstudent"
 else
 
 {
+
+  if(req.body.input.text.toLowerCase() === "full stack web development" || req.body.input.text.includes("full stack web") || req.body.input.text.includes("full stack"))
+  {
+    addLink = " Get some information here - " + "<a href='https://bootcamp.cps.gwu.edu/coding/'>Full Stack Web Developer</a>" + " We will email information out shortly. Thank You for your interest.";
+  }
+ 
+  else if(req.body.input.text.toLowerCase() === "data visualizations" || req.body.input.text.includes("data visualization") || req.body.input.text.includes("visualization"))
+  {
+    addLink = " Get some information here - " + "<a href='https://bootcamp.cps.gwu.edu/data/'>Data Visualization</a>" + " We will email information out shortly. Thank you for your interest.";
+  }
+  else
+  {
+    addLink = "";
+  }
+
   if(validator.validate(req.body.input.text))
   {
     //Add the email
     console.log("validation worked for email");
     newStudentLookup(req.body.context.conversation_id, req.body.input.text);
   }
+
 }
 
 
@@ -125,8 +145,8 @@ console.log('error:',err);
 }
 else
 {
-//console.log(JSON.stringify(response,null,2));
-
+console.log(JSON.stringify(response,null,2));
+response.output.text = response.output.text + addLink;
 res.json(response);
 }
 });
