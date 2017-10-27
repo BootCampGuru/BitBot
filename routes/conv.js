@@ -6,9 +6,9 @@ var db = require('node-mysql');
 var sqldb = require('mysql');
 var router = express.Router();
 var jsonParser = bodyParser.json();
+var validator = require("email-validator");
 var conversation = watson.conversation(auth.watson.conversation);
 
-var featureCollection = [];
 
 var connection = sqldb.createConnection({
   host: "localhost",
@@ -18,7 +18,11 @@ var connection = sqldb.createConnection({
   database: "bitbot"
 });
 
-function newStudentLookup(id) {
+function newStudentLookup(id, email) {
+
+  var featureCollection = [];
+
+
   connection.query("select conversation_id FROM new_student where ?",
     [
       {
@@ -34,16 +38,35 @@ function newStudentLookup(id) {
     if(featureCollection.length > 0)
     {
 
-    }
-    else
-    {
-
+      updateStudent(email,id);
     }
 
 
   });
 
 }
+
+
+function updateStudent(email,conversationid) {
+  var query = connection.query(
+    "UPDATE new_student SET ? WHERE ?",
+    [
+      {
+        email: email
+      },
+      {
+        conversation_id:conversationid
+      }
+    ],
+    function(err, res) {
+  
+    }
+  );
+
+  // logs the actual query being run
+  console.log(query.sql);
+}
+
 
 function insertNewStudent(conversationid)
 {
@@ -73,9 +96,21 @@ console.log(JSON.stringify(req.body.input.text));
 if(req.body.input.text === "new student" || req.body.input.text === "newstudent")
 {
 
-insertNewStudent(req.body.context.conversation_id);
+     insertNewStudent(req.body.context.conversation_id);
 
 }
+
+else
+
+{
+  if(validator.validate(req.body.input.text))
+  {
+    //Add the email
+    console.log("validation worked for email");
+    newStudentLookup(req.body.context.conversation_id, req.body.input.text);
+  }
+}
+
 
 conversation.message({
 'input' : req.body.input,
