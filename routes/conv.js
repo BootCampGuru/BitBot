@@ -10,7 +10,7 @@ var validator = require("email-validator");
 var conversation = watson.conversation(auth.watson.conversation);
 
 
-var connection = sqldb.createConnection({
+ var connection = sqldb.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
@@ -18,7 +18,47 @@ var connection = sqldb.createConnection({
   database: "bitbot"
 });
 
-function newStudentLookup(id, email) {
+var featureNames = [];
+
+function featureName(featurename) {
+   featureNames = []
+  connection.query("select description, links FROM features where ?",
+    [
+      {
+        feature_name: featurename
+      }
+    ], function(err, res) {
+    if (err) throw err;
+
+    for (var i = 0; i < res.length; i++) {      
+      featureNames.push("<a href='" + res[i].links + "'>" + "Link</a>");
+    }
+
+  });
+
+}
+
+ function allFeatures(name) {
+   featureNames = []
+  connection.query("select feature_name FROM features where ?",
+    [
+      {
+        language_name: name
+      }
+    ], function(err, res) {
+    if (err) throw err;
+
+    for (var i = 0; i < res.length; i++) {      
+      featureNames.push(res[i].feature_name);
+    }
+
+  });
+
+}
+
+
+
+function newStudentLookup(id, value, columnname) {
 
   var featureCollection = [];
 
@@ -38,7 +78,7 @@ function newStudentLookup(id, email) {
     if(featureCollection.length > 0)
     {
 
-      updateStudent(email,id);
+      updateStudent(value,columnname, id);
     }
 
 
@@ -47,30 +87,37 @@ function newStudentLookup(id, email) {
 }
 
 
-function updateStudent(email,conversationid) {
+function updateStudent(value,columnname,conversationid) {
+  console.log(columnname);
+  console.log(value);
   var query = connection.query(
-    "UPDATE new_student SET ? WHERE ?",
+    "UPDATE new_student SET " + columnname + " = ? WHERE ?",
     [
-      {
-        email: email
-      },
-      {
-        conversation_id:conversationid
-      }
+         value,   
+
+        {conversation_id:conversationid} 
     ],
     function(err, res) {
   
     }
   );
 
-  // logs the actual query being run
-  console.log(query.sql);
 }
+
+function twoDigits(d) {
+    if(0 <= d && d < 10) return "0" + d.toString();
+    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+    return d.toString();
+}
+ 
+Date.prototype.toMysqlFormat = function() {
+    return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" + twoDigits(this.getUTCDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
+};
 
 
 function insertNewStudent(conversationid)
 {
-
+  var MyDate = new Date();
   var query = connection.query(
     "INSERT INTO new_student SET ?",
     { 
@@ -79,7 +126,8 @@ function insertNewStudent(conversationid)
     },
     
     function(err, res) {
-      console.log(res.affectedRows + " new student inserted!\n");
+      //console.log(res.affectedRows + " new student inserted!\n");
+     updateStudent(MyDate.toMysqlFormat(),"create_date",conversationid);
     }
   );
  
@@ -89,13 +137,12 @@ router.post('/', jsonParser, function(req, res,next)
 {
 
  var addLink = "";
-
+ featureNames = [];
 
   if(req.body.input.text == "")
     return;
 
-
-console.log(JSON.stringify(req.body.input.text));
+//console.log(JSON.stringify(req.body.input.text));
 
 if(req.body.input.text === "new student" || req.body.input.text === "newstudent")
 {
@@ -108,9 +155,19 @@ else
 
 {
 
-  if(req.body.input.text.toLowerCase() === "full stack web development" || req.body.input.text.includes("full stack web") || req.body.input.text.includes("full stack"))
+  if(req.body.input.text.toLowerCase() == "headings")
   {
-    addLink = " Get some information here - " + "<a href='https://bootcamp.cps.gwu.edu/coding/'>Full Stack Web Developer</a>" + " We will email information out shortly. Thank You for your interest.";
+    featureName(req.body.input.text.toLowerCase());
+  }
+  else if(req.body.input.text.toLowerCase() === "html" || req.body.input.text.toLowerCase() === "css" || req.body.input.text.toLowerCase() === "javascript" || req.body.input.text.toLowerCase() === "jquery" || req.body.input.text.toLowerCase() === "mongodb" || req.body.input.text.toLowerCase() === "mysql" || req.body.input.text.toLowerCase() === "nodejs" || req.body.input.text.toLowerCase() === "reactjs")
+  {
+    allFeatures(req.body.input.text.toLowerCase());
+
+  }
+
+  else if(req.body.input.text.toLowerCase() === "full stack web development" || req.body.input.text.includes("full stack web") || req.body.input.text.includes("full stack"))
+  {
+    addLink = " Get some information here - " + "<a href='https://bootcamp.cps.gwu.edu/coding/'>Full Stack Web Developer</a>";
   }
  
   else if(req.body.input.text.toLowerCase() === "data visualizations" || req.body.input.text.includes("data visualization") || req.body.input.text.includes("visualization"))
@@ -125,9 +182,36 @@ else
   if(validator.validate(req.body.input.text))
   {
     //Add the email
-    console.log("validation worked for email");
-    newStudentLookup(req.body.context.conversation_id, req.body.input.text);
+    
+    newStudentLookup(req.body.context.conversation_id, req.body.input.text,"email");
   }
+  else if(req.body.input.text == "under 6 months" || req.body.input.text == "over 6 months"){
+    //Add the time frame
+    newStudentLookup(req.body.context.conversation_id, req.body.input.text, "time_frame");
+  }
+else if(req.body.input.text.includes("full stack") || req.body.input.text.includes("data visualization")){
+    //Add the course
+    newStudentLookup(req.body.context.conversation_id, req.body.input.text, "course");
+  }
+
+  else if(req.body.input.text.includes("yes") || req.body.input.text.includes("y") || req.body.input.text.includes("n") || req.body.input.text.includes("no")){
+    //Add the programming experience
+    newStudentLookup(req.body.context.conversation_id, req.body.input.text, "has_experience");
+  }
+
+   else if(req.body.input.text.includes("arlington") || req.body.input.text.includes("dc") || req.body.input.text.includes("n") || req.body.input.text.includes("no")){
+    //Add the location
+    newStudentLookup(req.body.context.conversation_id, req.body.input.text, "location");
+  }
+
+   else if(req.body.input.text.includes("online") || req.body.input.text.includes("web") || req.body.input.text.includes("family") || req.body.input.text.includes("friends")){
+    //Add the source
+    newStudentLookup(req.body.context.conversation_id, req.body.input.text, "source");
+  }
+
+
+
+
 
 }
 
@@ -145,8 +229,8 @@ console.log('error:',err);
 }
 else
 {
-console.log(JSON.stringify(response,null,2));
-response.output.text = response.output.text + addLink;
+//console.log(JSON.stringify(response,null,2));
+response.output.text = response.output.text + addLink + featureNames;
 res.json(response);
 }
 });
