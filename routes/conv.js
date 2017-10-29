@@ -31,7 +31,7 @@ function featureName(featurename) {
     if (err) throw err;
 
     for (var i = 0; i < res.length; i++) {      
-      featureNames.push("<a href='" + res[i].links + "'>" + "Link</a>");
+      featureNames.push("<a href='" + res[i].links + "'>" + " Helpful Link </a>. Say Help if you would like to continue?");
     }
 
   });
@@ -155,10 +155,10 @@ else
 
 {
 
-  if(req.body.input.text.toLowerCase() == "headings")
+  if(req.body.input.text.toLowerCase() == "headings" || req.body.input.text.toLowerCase() == "variables" || req.body.input.text.toLowerCase() == "create" || req.body.input.text.toLowerCase() == "selectors" || req.body.input.text.toLowerCase() == "modules" || req.body.input.text.toLowerCase() == "margins" || req.body.input.text.toLowerCase() == "primary key")
   {
     featureName(req.body.input.text.toLowerCase());
-  }
+  }  
   else if(req.body.input.text.toLowerCase() === "html" || req.body.input.text.toLowerCase() === "css" || req.body.input.text.toLowerCase() === "javascript" || req.body.input.text.toLowerCase() === "jquery" || req.body.input.text.toLowerCase() === "mongodb" || req.body.input.text.toLowerCase() === "mysql" || req.body.input.text.toLowerCase() === "nodejs" || req.body.input.text.toLowerCase() === "reactjs")
   {
     allFeatures(req.body.input.text.toLowerCase());
