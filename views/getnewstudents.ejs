@@ -37,15 +37,21 @@ function init()
 </script>
   </head>
   <body class="jumbotron">
-<div><b>New Students List </b></div>
+<div class="col-md-12 offset-md-1" style="color:orange; font-size:26px; background-color:#153260">Student List</div>
 <p/>
 <div id="students">
 
- <table id="table" >  
+ <table id="table" class="table"  cellspacing="10">  
         <thead>  
             <tr>  
                 <th>Email</th>  
                 <th>Course</th>  
+                <th>Location</th>
+                <th>Time Frame</th>
+                <th>Source</th>
+                <th>Experience</th>
+                <th>Date</th>
+
             </tr>  
         </thead>  
          <tbody>  
@@ -53,6 +59,11 @@ function init()
             <tr>  
                 <td><%= user.email %></td>  
                 <td><%= user.course %></td>
+                <td><%= user.location %></td>
+                <td><%= user.time_frame %></td>
+                <td><%= user.source %></td>
+                <td><%= user.has_experience %></td>
+                <td><%= user.create_date %></td>
             </tr>                                   
          <% }) %>
          </tbody>

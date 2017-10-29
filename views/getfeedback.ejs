@@ -36,13 +36,26 @@ function init()
 }
 </script>
   </head>
-  <body onLoad="init()"  class="jumbotron">
-<div><b>Feedback from all Students </b></div>
+  <body class="jumbotron">
+<div class="col-md-12 offset-md-1" style="color:orange; font-size:26px; background-color:#153260">Student Feedbacks</div>
 <p/>
 <div id="feeds">
-<table>
-
-</table>
+<table class="table" id="table" >  
+        <thead>  
+            <tr>  
+                <th>Feedback</th>  
+                <th>Date</th> 
+            </tr>  
+        </thead>  
+         <tbody>  
+         <% featureCollection.forEach(function (user) { %>
+            <tr>  
+                <td><%= user.feedback %></td>  
+                <td><%= user.create_date %></td>  
+            </tr>                                   
+         <% }) %>
+         </tbody>
+    </table> 
  </div>
   </body>
 </html>

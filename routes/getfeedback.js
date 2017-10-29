@@ -15,10 +15,6 @@ var q = require('q');
 var featureCollection = [];
 
 router.get('/', function(req, res, next) {
-   res.render('getfeedback', { title: 'Feedbacks' });
-});
-
-router.post('/', function(req, res, next) {
 
 var deferred = q.defer(); 
 
@@ -34,7 +30,8 @@ dbConnections.connect(function(err) {
       featureCollection.push(data);
     }
     
-    res.json(featureCollection);
+     obj = {featureCollection: rest};
+     res.render('getfeedback', obj); 
 
     dbConnections.end();
    

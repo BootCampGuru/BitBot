@@ -55,6 +55,8 @@ xhr.onreadystatechange = function()
 {
 if(xhr.readyState == 4) {
 if(xhr.status == 200){
+  console.log(xhr.status);
+  
 var json = JSON.parse(xhr.responseText);
 context = json.context;
 updateChatLog("Watson", json.output.text);

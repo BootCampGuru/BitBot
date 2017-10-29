@@ -32,7 +32,7 @@ dbConnections.connect(function(err) {
 
        obj = {studentCollection: rest};
         res.render('getnewstudents', obj);  
-
+        dbConnections.end();
    
    
   });
