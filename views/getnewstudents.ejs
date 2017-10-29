@@ -17,7 +17,7 @@ if(xhr.status == 200){
 	
 	json.forEach(function(j){
     var div = document.createElement('div');
-    div.innerHTML = '<b>' + 'Feedbacks:' + '</b>:' + j.feedback.feedback;
+    div.innerHTML = '<b>' + 'Feedbacks:' + '</b>:' + j.feedback;
 	document.getElementById("feeds").appendChild(div);
 });
 
@@ -36,13 +36,28 @@ function init()
 }
 </script>
   </head>
-  <body onLoad="init()"  class="jumbotron">
-<div><b>Feedback from all Students </b></div>
+  <body class="jumbotron">
+<div><b>New Students List </b></div>
 <p/>
-<div id="feeds">
-<table>
+<div id="students">
 
-</table>
+ <table id="table" >  
+        <thead>  
+            <tr>  
+                <th>Email</th>  
+                <th>Course</th>  
+            </tr>  
+        </thead>  
+         <tbody>  
+         <% studentCollection.forEach(function (user) { %>
+            <tr>  
+                <td><%= user.email %></td>  
+                <td><%= user.course %></td>
+            </tr>                                   
+         <% }) %>
+         </tbody>
+    </table> 
+
  </div>
   </body>
 </html>

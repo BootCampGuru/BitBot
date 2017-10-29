@@ -10,6 +10,7 @@ var users = require('./routes/users');
 var conv = require('./routes/conv');
 var feedback = require('./routes/feedback');
 var getfeedback = require('./routes/getfeedback');
+var getnewstudents = require('./routes/getnewstudents');
 
 var app = express();
 
@@ -58,6 +59,7 @@ app.use('/users', users);
 app.use('/conv', conv);
 app.use('/feedback', feedback);
 app.use('/getfeedback', getfeedback);
+app.use('/getnewstudents', getnewstudents);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -12,31 +12,28 @@ var request = require("request");
 var conversation = watson.conversation(auth.watson.conversation);
 var q = require('q');
 
-var featureCollection = [];
+var studentCollection = [];
 
 router.get('/', function(req, res, next) {
-   res.render('getfeedback', { title: 'Feedbacks' });
-});
-
-router.post('/', function(req, res, next) {
 
 var deferred = q.defer(); 
 
 dbConnections.connect(function(err) {
   if (err) throw err;
   
- dbConnections.query("SELECT * FROM feedback", function(err, rest) {
+ dbConnections.query("SELECT * FROM new_student", function(err, rest) {
     if (err) throw err;
 
     for (var i = 0; i < rest.length; i++) {   
-    var data = {feedback : rest[i]}   
+    var data = {student : rest[i]}   
      
-      featureCollection.push(data);
+      studentCollection.push(data);
     }
-    
-    res.json(featureCollection);
 
-    dbConnections.end();
+       obj = {studentCollection: rest};
+        res.render('getnewstudents', obj);  
+
+   
    
   });
     });
