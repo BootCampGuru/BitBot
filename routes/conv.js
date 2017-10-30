@@ -4,12 +4,41 @@ var bodyParser = require('body-parser');
 var watson = require('watson-developer-cloud');
 var db = require('node-mysql');
 var sqldb = require('mysql');
+var wav = require('wav');
+var Speaker = require('speaker');
 var router = express.Router();
 var jsonParser = bodyParser.json();
 var validator = require("email-validator");
 var conversation = watson.conversation(auth.watson.conversation);
+var toneAnalyzer = watson.tone_analyzer(auth.tone_analyzer);
+var tts = watson.text_to_speech(auth.text_to_speech);
+var translator = watson.language_translation(auth.language_translation);
+var tts1 = require('node-google-text-to-speech');
+var reader = new wav.Reader();
 
+//Analyzes the tone of new students
+function ToneAnalyzer(analyzethis)
+{
+toneAnalyzer.tone({text:analyzethis}, function(err,result){
+  if(err)
+    throw err;
 
+var cats = result.document_tone.tone_categories;
+cats.forEach(function(cat){
+  cat.tones.forEach(function(tone){
+    console.log(" %s:%s",tone.tone_name, tone.score);
+    if(tone.tone_name == "sadness")
+    {
+      if(parseInt(tone.score) > 0.2)
+      {
+        addLink = " We are here to help, don't you despair!";
+      }
+    }
+  })
+})
+ 
+});
+}
  var connection = sqldb.createConnection({
   host: "localhost",
   port: 3306,
@@ -209,10 +238,10 @@ else if(req.body.input.text.includes("full stack") || req.body.input.text.includ
     //Add the source
     newStudentLookup(req.body.context.conversation_id, req.body.input.text, "source");
   }
-
-
-
-
+  else if(req.body.input.text.toLowerCase().includes("help"))
+  {
+    ToneAnalyzer(req.body.input.text);
+  }
 
 }
 
@@ -232,7 +261,56 @@ else
 {
 //console.log(JSON.stringify(response,null,2));
 response.output.text = response.output.text + addLink + featureNames;
+
+
+translator.translate({
+text : response.output.text + addLink + featureNames,
+source:"en",
+target:"es"
+}, function(err, result){
+   if(err) {
+   return console.log(err);
+    }
+    //console.log(result.translations[0].translation);
+
+    tts.synthesize({
+    text: result.translations[0].translation,
+    accept: 'audio/wav',
+    voice: 'es-ES-LauraVoice'
+  }).pipe(reader).on('response', function(response){
+    console.log(response);
+    reader.pipe(new Speaker(response));
+   });
+
+  });
+
+ // tts1.translate('en', 'dog', function(result) {
+ //    console.log(result); 
+ //    if(result.success) { //check for success 
+ //      var response = { 'audio' : result.data };
+ //      socket.emit('ttsResult', response); //emit the audio to client 
+ //    }
+ //  });
+
+// function Test() {
+
+//   fetch('https://stream.watsonplatform.net/text-to-speech/api/v1/token')
+//     .then(function(response) {
+//       return response.text();
+//     }).then(function (token) {
+
+//       tts.synthesize({
+//         text: "test",
+//         token: token
+//       }).on('error', function(err) {
+//         console.log('audio error: ', err);
+//       });
+//     });
+// };
+
+
 res.json(response);
+
 }
 });
 });

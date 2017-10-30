@@ -11,13 +11,13 @@ module.exports = {
 	 "url": "https://gateway.watsonplatform.net/language-translator/api",
      "username": "64550bb9-c99f-45d2-9774-34286c819726",
      "password": "W6FZHFtcVyst",
-	version:"v2"
+	  version:"v2"
 	},
 	text_to_speech:{
-	  "url": "https://stream.watsonplatform.net/text-to-speech/api",
+	  "url": "https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize",
       "username": "760336dc-2f5a-4b8f-8477-702bf388de04",
       "password": "85VR4gy3S0vR",
-	version:"v2"
+      version:"v1"
 	},
 	watson:{
 		conversation:{
