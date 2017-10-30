@@ -11,28 +11,27 @@ var conv = require('./routes/conv');
 var feedback = require('./routes/feedback');
 var getfeedback = require('./routes/getfeedback');
 var getnewstudents = require('./routes/getnewstudents');
-const TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
-
+var watson = require('watson-developer-cloud');
+var extend = require('extend');
 var app = express();
 
 
+var config ={
+  version: 'v1',
+  url: 'https://stream.watsonplatform.net/speech-to-text/api',
+  username: 'ea666f48-2f84-4475-92f1-c24ff5c6322f',
+  password: 'WJnTPL7L5TlG'
+};
 
+// var credentials = extend(config, bluemix.getServiceCreds('speech_to_text'));
+// var authorization = watson.authorization(credentials);
 
+// app.get('/token', function(req,res){
 
-app.get('/api/synthesize', (req, res, next) => {
-  const transcript = textToSpeech.synthesize(req.query);
-  transcript.on('response', (response) => {
-    if (req.query.download) {
-      response.headers['content-disposition'] = `attachment; filename=transcript.${getFileExtension(req.query.accept)}`;
-    }
-  });
-  transcript.on('error', next);
-  transcript.pipe(res);
-});
-
-
-// error-handler settings
-//require('./config/error-handler')(app);
+//   authorization.getToken({url: credentials.url} , function(err, token){
+//     console.log(token);
+//   })
+// };
 
 
 

@@ -11,9 +11,31 @@ var jsonParser = bodyParser.json();
 var validator = require("email-validator");
 var conversation = watson.conversation(auth.watson.conversation);
 var toneAnalyzer = watson.tone_analyzer(auth.tone_analyzer);
+var SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
+var TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
+var fs = require('fs');
 var tts = watson.text_to_speech(auth.text_to_speech);
 var translator = watson.language_translation(auth.language_translation);
 var reader = new wav.Reader();
+
+
+var textToSpeech = new TextToSpeechV1(
+{
+
+  username: '760336dc-2f5a-4b8f-8477-702bf388de04',
+  password: '85VR4gy3S0vR'
+});
+
+
+
+var SpeechToText = new SpeechToTextV1(
+{
+
+  username: 'ea666f48-2f84-4475-92f1-c24ff5c6322f',
+  password: 'WJnTPL7L5TlG'
+});
+
+
 
 //Analyzes the tone of new students
 function ToneAnalyzer(analyzethis)
@@ -25,7 +47,7 @@ toneAnalyzer.tone({text:analyzethis}, function(err,result){
 var cats = result.document_tone.tone_categories;
 cats.forEach(function(cat){
   cat.tones.forEach(function(tone){
-    console.log(" %s:%s",tone.tone_name, tone.score);
+    //console.log(" %s:%s",tone.tone_name, tone.score);
     if(tone.tone_name == "sadness")
     {
       if(parseInt(tone.score) > 0.2)
@@ -292,33 +314,22 @@ const getFileExtension = (acceptQuery) => {
   }
 };
 
-  const transcript = tts.synthesize(
-    {
-     text: result.translations[0].translation,
-     accept: 'audio/wav',
-     voice: 'es-ES-Lisa'
-   });
-  transcript.on('response', (response) => {
-    if (req.query.download) {
-      response.headers['content-disposition'] = `attachment; filename=transcript.${getFileExtension(req.query.accept)}`;
-    }
 
-    reader.pipe(new Speaker(response));
+
+
+textToSpeech.synthesize(
+{
+  text: response.output.text,
+  voice: 'en-GB_KateVoice',
+  accept: 'audio/wav'
+}
+  ).pipe(reader).on('format', function(format){
+    console.log(format);
+    reader.pipe(new Speaker(format));
   });
- 
-
-  //   TextToSpeechV1.synthesize({
-  //   text: result.translations[0].translation,
-  //   accept: 'audio/ogg; codecs=opus',
-  //   voice: 'es-ES-Lisa'
-  // }).pipe(reader).on('response', function(response){
-  //   console.log(response);
-  //   reader.pipe(new Speaker(response));
-  //  });
 
 
   });
-
 
 
 res.json(response);

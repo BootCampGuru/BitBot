@@ -19,6 +19,12 @@ module.exports = {
       "password": "85VR4gy3S0vR",
       version:"v1"
 	},
+	speech_to_text:{
+	  "url": "https://stream.watsonplatform.net/speech-to-text/api",
+      "username": "ea666f48-2f84-4475-92f1-c24ff5c6322f",
+      "password": "WJnTPL7L5TlG",
+      version:"v1"
+	},
 	watson:{
 		conversation:{
      "url": "https://gateway.watsonplatform.net/conversation/api",
