@@ -1,0 +1,12 @@
+---
+applications:
+  services:
+    - campbottranslator
+    - campbotspeech
+    - campbotconvo
+    - campbot
+ - name: BitBotChamp
+   command: npm start
+   path: .
+   random-route: true
+   memory: 256M

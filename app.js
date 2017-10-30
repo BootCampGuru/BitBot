@@ -11,8 +11,30 @@ var conv = require('./routes/conv');
 var feedback = require('./routes/feedback');
 var getfeedback = require('./routes/getfeedback');
 var getnewstudents = require('./routes/getnewstudents');
+const TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
 
 var app = express();
+
+
+
+
+
+app.get('/api/synthesize', (req, res, next) => {
+  const transcript = textToSpeech.synthesize(req.query);
+  transcript.on('response', (response) => {
+    if (req.query.download) {
+      response.headers['content-disposition'] = `attachment; filename=transcript.${getFileExtension(req.query.accept)}`;
+    }
+  });
+  transcript.on('error', next);
+  transcript.pipe(res);
+});
+
+
+// error-handler settings
+//require('./config/error-handler')(app);
+
+
 
 var watsonMiddleware = require('botkit-middleware-watson')({
   username: "3857edc0-18b2-431d-b612-d36a45c5db66",

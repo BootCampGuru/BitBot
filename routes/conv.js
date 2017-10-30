@@ -13,7 +13,6 @@ var conversation = watson.conversation(auth.watson.conversation);
 var toneAnalyzer = watson.tone_analyzer(auth.tone_analyzer);
 var tts = watson.text_to_speech(auth.text_to_speech);
 var translator = watson.language_translation(auth.language_translation);
-var tts1 = require('node-google-text-to-speech');
 var reader = new wav.Reader();
 
 //Analyzes the tone of new students
@@ -273,40 +272,53 @@ target:"es"
     }
     //console.log(result.translations[0].translation);
 
-    tts.synthesize({
-    text: result.translations[0].translation,
-    accept: 'audio/wav',
-    voice: 'es-ES-LauraVoice'
-  }).pipe(reader).on('response', function(response){
-    console.log(response);
-    reader.pipe(new Speaker(response));
+
+const getFileExtension = (acceptQuery) => {
+  const accept = acceptQuery || '';
+  switch (accept) {
+    case 'audio/ogg;codecs=opus':
+    case 'audio/ogg;codecs=vorbis':
+      return 'ogg';
+    case 'audio/wav':
+      return 'wav';
+    case 'audio/mpeg':
+      return 'mpeg';
+    case 'audio/webm':
+      return 'webm';
+    case 'audio/flac':
+      return 'flac';
+    default:
+      return 'mp3';
+  }
+};
+
+  const transcript = tts.synthesize(
+    {
+     text: result.translations[0].translation,
+     accept: 'audio/wav',
+     voice: 'es-ES-Lisa'
    });
+  transcript.on('response', (response) => {
+    if (req.query.download) {
+      response.headers['content-disposition'] = `attachment; filename=transcript.${getFileExtension(req.query.accept)}`;
+    }
+
+    reader.pipe(new Speaker(response));
+  });
+ 
+
+  //   TextToSpeechV1.synthesize({
+  //   text: result.translations[0].translation,
+  //   accept: 'audio/ogg; codecs=opus',
+  //   voice: 'es-ES-Lisa'
+  // }).pipe(reader).on('response', function(response){
+  //   console.log(response);
+  //   reader.pipe(new Speaker(response));
+  //  });
+
 
   });
 
- // tts1.translate('en', 'dog', function(result) {
- //    console.log(result); 
- //    if(result.success) { //check for success 
- //      var response = { 'audio' : result.data };
- //      socket.emit('ttsResult', response); //emit the audio to client 
- //    }
- //  });
-
-// function Test() {
-
-//   fetch('https://stream.watsonplatform.net/text-to-speech/api/v1/token')
-//     .then(function(response) {
-//       return response.text();
-//     }).then(function (token) {
-
-//       tts.synthesize({
-//         text: "test",
-//         token: token
-//       }).on('error', function(err) {
-//         console.log('audio error: ', err);
-//       });
-//     });
-// };
 
 
 res.json(response);
