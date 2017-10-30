@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
 var deferred = q.defer(); 
 
 dbConnections.connect(function(err) {
-  if (err) throw err;
+ if (err) throw err;
   
  dbConnections.query("SELECT * FROM new_student", function(err, rest) {
     if (err) throw err;

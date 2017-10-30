@@ -33,8 +33,9 @@ function featureName(featurename) {
     for (var i = 0; i < res.length; i++) {      
       featureNames.push("<a href='" + res[i].links + "'>" + " Helpful Link </a>. Say Help if you would like to continue?");
     }
-
+    
   });
+
 
 }
 
@@ -51,7 +52,7 @@ function featureName(featurename) {
     for (var i = 0; i < res.length; i++) {      
       featureNames.push(res[i].feature_name);
     }
-
+      
   });
 
 }
@@ -98,7 +99,7 @@ function updateStudent(value,columnname,conversationid) {
         {conversation_id:conversationid} 
     ],
     function(err, res) {
-  
+      
     }
   );
 
@@ -194,17 +195,17 @@ else if(req.body.input.text.includes("full stack") || req.body.input.text.includ
     newStudentLookup(req.body.context.conversation_id, req.body.input.text, "course");
   }
 
-  else if(req.body.input.text.includes("yes") || req.body.input.text.includes("y") || req.body.input.text.includes("n") || req.body.input.text.includes("no")){
+  else if(req.body.input.text.includes("yes") || req.body.input.text.includes("y") || req.body.input.text.includes("no")){
     //Add the programming experience
     newStudentLookup(req.body.context.conversation_id, req.body.input.text, "has_experience");
   }
 
-   else if(req.body.input.text.includes("arlington") || req.body.input.text.includes("dc") || req.body.input.text.includes("n") || req.body.input.text.includes("no")){
+   else if(req.body.input.text.toLowerCase() == "dc" || req.body.input.text.toLowerCase() == "arlington"  || req.body.input.text.includes("arlington") || req.body.input.text.includes("dc") || req.body.input.text.includes("district") || req.body.input.text.includes("capital")){
     //Add the location
     newStudentLookup(req.body.context.conversation_id, req.body.input.text, "location");
   }
 
-   else if(req.body.input.text.includes("online") || req.body.input.text.includes("web") || req.body.input.text.includes("family") || req.body.input.text.includes("friends")){
+   else if(req.body.input.text.toLowerCase() == "online" || req.body.input.text == "friends" ||  req.body.input.text.includes("online") || req.body.input.text.includes("web") || req.body.input.text.includes("family") || req.body.input.text.includes("friends")){
     //Add the source
     newStudentLookup(req.body.context.conversation_id, req.body.input.text, "source");
   }
