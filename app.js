@@ -13,6 +13,10 @@ var getfeedback = require('./routes/getfeedback');
 var getnewstudents = require('./routes/getnewstudents');
 var watson = require('watson-developer-cloud');
 var extend = require('extend');
+var BinaryServer = require('binaryjs').BinaryServer;
+var fs = require('fs');
+var wav = require('wav');
+var outFile = 'demo.wav';
 var app = express();
 
 
@@ -81,6 +85,30 @@ app.use('/conv', conv);
 app.use('/feedback', feedback);
 app.use('/getfeedback', getfeedback);
 app.use('/getnewstudents', getnewstudents);
+
+//listen
+
+binaryServer = BinaryServer({port: 9001});
+
+binaryServer.on('connection', function(client) {
+  console.log('new connection');
+
+  var fileWriter = new wav.FileWriter(outFile, {
+    channels: 1,
+    sampleRate: 48000,
+    bitDepth: 16
+  });
+
+  client.on('stream', function(stream, meta) {
+    console.log('new stream');
+    stream.pipe(fileWriter);
+
+    stream.on('end', function() {
+      fileWriter.end();
+      console.log('wrote to file ' + outFile);
+    });
+  });
+  });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
