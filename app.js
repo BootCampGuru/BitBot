@@ -18,8 +18,9 @@ var fs = require('fs');
 var wav = require('wav');
 var outFile = 'demo.wav';
 var app = express();
-
-
+var extend = require('util')._extend;
+var i18n   = require('i18next');
+varvcapServices = require('vcap_services');
 var config ={
   version: 'v1',
   url: 'https://stream.watsonplatform.net/speech-to-text/api',
@@ -85,6 +86,9 @@ app.use('/conv', conv);
 app.use('/feedback', feedback);
 app.use('/getfeedback', getfeedback);
 app.use('/getnewstudents', getnewstudents);
+
+// Call the Watson Speech to Text API
+app.use('/api/speech-to-text/', require('./stt-token.js'));
 
 //listen
 

@@ -2,8 +2,8 @@
 <html>
   <head>
    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-<script type='text/javascript' src="https://cdn.jsdelivr.net/binaryjs/0.2.1/binary.min.js" />
-<script src="//www.WebRTC-Experiment.com/RecordRTC.js"></script>
+<!-- <script type='text/javascript' src="https://cdn.jsdelivr.net/binaryjs/0.2.1/binary.min.js" />
+<script src="//www.WebRTC-Experiment.com/RecordRTC.js"></script> -->
 
 <script type='text/javascript'>
 
@@ -87,63 +87,63 @@ sendMessage();
 }
 
 
-  var client = new BinaryClient('ws://localhost:9001');
+  // var client = new BinaryClient('ws://localhost:9001');
 
-  client.on('open', function() {
-    window.Stream = client.createStream();
+  // client.on('open', function() {
+  //   window.Stream = client.createStream();
 
-    if (!navigator.getUserMedia)
-      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-    navigator.mozGetUserMedia || navigator.msGetUserMedia;
+  //   if (!navigator.getUserMedia)
+  //     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+  //   navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
-    if (navigator.getUserMedia) {
-      navigator.getUserMedia({audio:true}, success, function(e) {
-        alert('Error capturing audio.');
-      });
-    } else alert('getUserMedia not supported in this browser.');
+  //   if (navigator.getUserMedia) {
+  //     navigator.getUserMedia({audio:true}, success, function(e) {
+  //       alert('Error capturing audio.');
+  //     });
+  //   } else alert('getUserMedia not supported in this browser.');
 
-    var recording = false;
+  //   var recording = false;
 
-    startRecording = function() {
-      recording = true;
-    }
+  //   startRecording = function() {
+  //     recording = true;
+  //   }
 
-    stopRecording = function() {
-      recording = false;
-      window.Stream.end();
-    }
+  //   stopRecording = function() {
+  //     recording = false;
+  //     window.Stream.end();
+  //   }
 
-    function success(e) {
-      audioContext = window.AudioContext || window.webkitAudioContext;
-      context = new audioContext();
+  //   function success(e) {
+  //     audioContext = window.AudioContext || window.webkitAudioContext;
+  //     context = new audioContext();
 
-      // the sample rate is in context.sampleRate
-      audioInput = context.createMediaStreamSource(e);
+  //     // the sample rate is in context.sampleRate
+  //     audioInput = context.createMediaStreamSource(e);
 
-      var bufferSize = 2048;
-      recorder = context.createScriptProcessor(bufferSize, 1, 1);
+  //     var bufferSize = 2048;
+  //     recorder = context.createScriptProcessor(bufferSize, 1, 1);
 
-      recorder.onaudioprocess = function(e){
-        if(!recording) return;
-        console.log ('recording');
-        var left = e.inputBuffer.getChannelData(0);
-        window.Stream.write(convertoFloat32ToInt16(left));
-      }
+  //     recorder.onaudioprocess = function(e){
+  //       if(!recording) return;
+  //       console.log ('recording');
+  //       var left = e.inputBuffer.getChannelData(0);
+  //       window.Stream.write(convertoFloat32ToInt16(left));
+  //     }
 
-      audioInput.connect(recorder)
-      recorder.connect(context.destination); 
-    }
+  //     audioInput.connect(recorder)
+  //     recorder.connect(context.destination); 
+  //   }
 
-    function convertoFloat32ToInt16(buffer) {
-      var l = buffer.length;
-      var buf = new Int16Array(l)
+  //   function convertoFloat32ToInt16(buffer) {
+  //     var l = buffer.length;
+  //     var buf = new Int16Array(l)
 
-      while (l--) {
-        buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
-      }
-      return buf.buffer
-    }
-  });
+  //     while (l--) {
+  //       buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
+  //     }
+  //     return buf.buffer
+  //   }
+  // });
 
 
 
@@ -161,17 +161,57 @@ sendMessage();
 
     }
 </script>
-<!-- <script type='text/javascript' src="/javascripts/recorder.js" /> -->
+ <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js"></script>
+<script type="text/javascript" src="/javascripts/watson-speech.js"></script>
+<script>
+
+
+function microphone() {
+ fetch('/api/speech-to-text/token').then(function(response) {
+ return response.text();
+ }).then(function (token) {
+ var stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
+ token: token,
+ });
+ stream.setEncoding('utf8'); // get text instead of Buffers for on data events
+ stream.on('data', function(data) {
+ console.log(data);
+ document.querySelector('#text').value = data;
+ });
+ stream.on('error', function(err) {
+ console.log(err);
+ });
+$('#stop').onclick = stream.stop.bind(stream);
+ }).catch(function(error) {
+ console.log(error);
+ });
+ };
+</script>
+
+
   </head>
   <body onload = "init()">
 <div  class="col-md-12 jumbotron">
 <div class="col-md-12 offset-md-1" style="color:orange; font-size:26px; background-color:#153260">Welcome to our Boot Camp! You can say Hi to me and start your conversation</div>
 
-<div class="col-md-10 offset-md-5"><input type="text" id="text" name="text" size="100" /> 
+<div class="col-md-10 offset-md-5"><input id="text" type="text" id="text" name="text" size="100" /> 
 <button  class="btn btn-primary" onclick="sendMessage()">Send</button></div>
 <div  class="col-md-12">
 
 <img id="imgplus" alt="" src="/images/dictation-icon.png" onmouseover="this.style.cursor='pointer'" onclick="chngimg()" style="height:50; width:50"  />
+
+</div>
+
+<div>
+  <div class="col-lg-3 col-xs-3">
+              <button type="button" id="usevoice" class="btn btn-block use-voice" onclick="microphone();return false;">Record</button>
+            </div>
+      <div class="col-lg-3 col-xs-3">
+              <button type="button" id="stop" class="btn btn-block stop">Stop</button>
+            </div>
+
+
 
 </div>
 <div class="col-md-12" style="color:orange; font-size:26px; background-color:#153260"><b>Conversation History</b></div>

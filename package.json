@@ -16,6 +16,7 @@
     "email-validator": "^1.1.1",
     "express": "~4.15.5",
     "extend": "^3.0.1",
+    "i18next": "^10.0.7",
     "morgan": "~1.9.0",
     "mysql": "^2.15.0",
     "node-google-text-to-speech": "^0.1.0",
@@ -25,6 +26,7 @@
     "serve-favicon": "~2.4.5",
     "speaker": "^0.4.0",
     "util": "^0.10.3",
+    "vcap_services": "^0.3.4",
     "watson-developer-cloud": "^2.41.1",
     "wav": "^1.0.1"
   }
