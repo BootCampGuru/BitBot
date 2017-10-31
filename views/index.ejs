@@ -82,6 +82,17 @@ document.getElementById("text").addEventListener("keydown" , function(e)
 
 sendMessage();
 }
+
+  function chngimg() {
+        var img = document.getElementById('imgplus').src;
+        if (img.indexOf('dictation-toggle-icon.png')!=-1) {
+            document.getElementById('imgplus').src  = 'Images/dictation-icon.png';
+        }
+         else {
+           document.getElementById('imgplus').src = 'Images/dictation-toggle-icon.png';
+       }
+
+    }
 </script>
   </head>
   <body onload = "init()">
@@ -89,8 +100,12 @@ sendMessage();
 <div class="col-md-12 offset-md-1" style="color:orange; font-size:26px; background-color:#153260">Welcome to our Boot Camp! You can say Hi to me and start your conversation</div>
 
 <div class="col-md-10 offset-md-5"><input type="text" id="text" name="text" size="100" /> 
-<button  class="btn btn-primary"  onclick="sendMessage()">Send</button></div>
-<div  class="col-md-12"><img src="/images/dictation-icon.png" style="height:50; width:50"></div>
+<button  class="btn btn-primary" onclick="sendMessage()">Send</button></div>
+<div  class="col-md-12">
+
+<img id="imgplus" alt="" src="/images/dictation-icon.png" onmouseover="this.style.cursor='pointer'" onclick="chngimg()" style="height:50; width:50"  />
+
+</div>
 <div class="col-md-12" style="color:orange; font-size:26px; background-color:#153260"><b>Conversation History</b></div>
 <p/><div style="border:1px;border-radius:10px;" class="col-md-12" id="history" ></div>
 </div>
