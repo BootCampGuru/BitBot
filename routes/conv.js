@@ -15,6 +15,7 @@ var SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
 var TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
 var fs = require('fs');
 var tts = watson.text_to_speech(auth.text_to_speech);
+var memorystream = require('memorystream');
 var translator = watson.language_translation(auth.language_translation);
 
 
@@ -318,6 +319,33 @@ response.output.text = response.output.text + addLink + featureNames;
 
 
 //   });
+
+
+var memStream = new memorystream();
+
+var data = '';
+
+memStream.on('data', function(chunk) {
+  data += chunk.toString();
+});
+
+
+memStream.on('end', function(){
+  
+  var reader = new wav.Reader();
+
+  reader.on('format', function (format) {
+ 
+  // the WAVE header is stripped from the output of the reader 
+  reader.pipe(new Speaker(format));
+});
+ 
+// pipe the WAVE file to the Reader instance 
+memStream.pipe(reader);
+
+
+})
+
 
 
 var wstream = fs.createWriteStream('HelloWatson.wav');

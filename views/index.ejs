@@ -82,20 +82,25 @@ document.getElementById('imgplus').src = 'Images/dictation-toggle-icon.png';
  return response.text();
  }).then(function (token) {
  var stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
+
  token: token,
  });
+
  stream.setEncoding('utf8'); // get text instead of Buffers for on data events
  stream.on('data', function(data) {
+
  document.querySelector('#text').value = data;
- sendMessage();
+
  });
  stream.on('error', function(err) {
  console.log(err);
  });
 
+ document.querySelector('#usevoice').onmouseup = stream.stop.bind(stream);
+
 document.getElementById('usevoice').addEventListener("mouseup", function(e) {
   document.getElementById('imgplus').src  = 'Images/dictation-icon.png';
-stream.stop.bind(stream);
+  
 });
 
 
@@ -156,8 +161,8 @@ sendMessage();
 </div>
 
   <div>
-  <div class="col-lg-3 col-xs-3">
-              <button type="button" id="usevoice" class="btn btn-block use-voice">Speak</button>
+  <div class="col-md-2 col-md-2">
+              <button  type="button" id="usevoice" class="btn-primary btn btn-block use-voice">Speak</button>
             </div>
   
 </div> 
