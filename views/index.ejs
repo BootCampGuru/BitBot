@@ -38,6 +38,7 @@
 function sendMessage()
 {
 var text = document.getElementById("text").value;
+console.log(text);
 updateChatLog("You", text);
 
 var payload = {};
@@ -73,6 +74,37 @@ xhr.send(JSON.stringify(payload));
 
 function init()
 {
+
+document.getElementById('usevoice').addEventListener("mousedown", function(e) {
+
+document.getElementById('imgplus').src = 'Images/dictation-toggle-icon.png';
+ fetch('/api/speech-to-text/token').then(function(response) {
+ return response.text();
+ }).then(function (token) {
+ var stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
+ token: token,
+ });
+ stream.setEncoding('utf8'); // get text instead of Buffers for on data events
+ stream.on('data', function(data) {
+ document.querySelector('#text').value = data;
+ sendMessage();
+ });
+ stream.on('error', function(err) {
+ console.log(err);
+ });
+
+document.getElementById('usevoice').addEventListener("mouseup", function(e) {
+  document.getElementById('imgplus').src  = 'Images/dictation-icon.png';
+stream.stop.bind(stream);
+});
+
+
+ }).catch(function(error) {
+ console.log(error);
+ });
+ });
+
+
 document.getElementById("text").addEventListener("keydown" , function(e)
 {
   if(!e) { 
@@ -87,75 +119,15 @@ sendMessage();
 }
 
 
-  // var client = new BinaryClient('ws://localhost:9001');
-
-  // client.on('open', function() {
-  //   window.Stream = client.createStream();
-
-  //   if (!navigator.getUserMedia)
-  //     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-  //   navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-  //   if (navigator.getUserMedia) {
-  //     navigator.getUserMedia({audio:true}, success, function(e) {
-  //       alert('Error capturing audio.');
-  //     });
-  //   } else alert('getUserMedia not supported in this browser.');
-
-  //   var recording = false;
-
-  //   startRecording = function() {
-  //     recording = true;
-  //   }
-
-  //   stopRecording = function() {
-  //     recording = false;
-  //     window.Stream.end();
-  //   }
-
-  //   function success(e) {
-  //     audioContext = window.AudioContext || window.webkitAudioContext;
-  //     context = new audioContext();
-
-  //     // the sample rate is in context.sampleRate
-  //     audioInput = context.createMediaStreamSource(e);
-
-  //     var bufferSize = 2048;
-  //     recorder = context.createScriptProcessor(bufferSize, 1, 1);
-
-  //     recorder.onaudioprocess = function(e){
-  //       if(!recording) return;
-  //       console.log ('recording');
-  //       var left = e.inputBuffer.getChannelData(0);
-  //       window.Stream.write(convertoFloat32ToInt16(left));
-  //     }
-
-  //     audioInput.connect(recorder)
-  //     recorder.connect(context.destination); 
-  //   }
-
-  //   function convertoFloat32ToInt16(buffer) {
-  //     var l = buffer.length;
-  //     var buf = new Int16Array(l)
-
-  //     while (l--) {
-  //       buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
-  //     }
-  //     return buf.buffer
-  //   }
-  // });
-
-
-
-
   function chngimg() {
         var img = document.getElementById('imgplus').src;
         if (img.indexOf('dictation-toggle-icon.png')!=-1) {
-          //stopRecording();
+        
             document.getElementById('imgplus').src  = 'Images/dictation-icon.png';
         }
          else {
-         // startRecording();
+      
+     
            document.getElementById('imgplus').src = 'Images/dictation-toggle-icon.png';
        }
 
@@ -167,26 +139,6 @@ sendMessage();
 <script>
 
 
-function microphone() {
- fetch('/api/speech-to-text/token').then(function(response) {
- return response.text();
- }).then(function (token) {
- var stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
- token: token,
- });
- stream.setEncoding('utf8'); // get text instead of Buffers for on data events
- stream.on('data', function(data) {
- console.log(data);
- document.querySelector('#text').value = data;
- });
- stream.on('error', function(err) {
- console.log(err);
- });
-$('#stop').onclick = stream.stop.bind(stream);
- }).catch(function(error) {
- console.log(error);
- });
- };
 </script>
 
 
@@ -199,21 +151,18 @@ $('#stop').onclick = stream.stop.bind(stream);
 <button  class="btn btn-primary" onclick="sendMessage()">Send</button></div>
 <div  class="col-md-12">
 
-<img id="imgplus" alt="" src="/images/dictation-icon.png" onmouseover="this.style.cursor='pointer'" onclick="chngimg()" style="height:50; width:50"  />
+<img id="imgplus" alt="" src="/images/dictation-icon.png" onmouseover="this.style.cursor='pointer'" style="height:50; width:50"  />
 
 </div>
 
-<div>
+  <div>
   <div class="col-lg-3 col-xs-3">
-              <button type="button" id="usevoice" class="btn btn-block use-voice" onclick="microphone();return false;">Record</button>
+              <button type="button" id="usevoice" class="btn btn-block use-voice">Speak</button>
             </div>
-      <div class="col-lg-3 col-xs-3">
-              <button type="button" id="stop" class="btn btn-block stop">Stop</button>
-            </div>
+  
+</div> 
 
 
-
-</div>
 <div class="col-md-12" style="color:orange; font-size:26px; background-color:#153260"><b>Conversation History</b></div>
 <p/><div style="border:1px;border-radius:10px;" class="col-md-12" id="history" ></div>
 </div>

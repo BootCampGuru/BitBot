@@ -190,7 +190,7 @@ router.post('/', jsonParser, function(req, res,next)
  var addLink = "";
  featureNames = [];
 
-  if(req.body.input.text == "")
+   if(req.body.input.text == "")
     return;
 
 //console.log(JSON.stringify(req.body.input.text));
