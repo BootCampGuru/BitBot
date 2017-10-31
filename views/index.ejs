@@ -2,7 +2,10 @@
 <html>
   <head>
    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <script type='text/javascript'>
+<script type='text/javascript' src="https://cdn.jsdelivr.net/binaryjs/0.2.1/binary.min.js" />
+<script src="//www.WebRTC-Experiment.com/RecordRTC.js"></script>
+
+<script type='text/javascript'>
 
 	var context = {};
 
@@ -83,17 +86,82 @@ document.getElementById("text").addEventListener("keydown" , function(e)
 sendMessage();
 }
 
+
+  var client = new BinaryClient('ws://localhost:9001');
+
+  client.on('open', function() {
+    window.Stream = client.createStream();
+
+    if (!navigator.getUserMedia)
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    if (navigator.getUserMedia) {
+      navigator.getUserMedia({audio:true}, success, function(e) {
+        alert('Error capturing audio.');
+      });
+    } else alert('getUserMedia not supported in this browser.');
+
+    var recording = false;
+
+    startRecording = function() {
+      recording = true;
+    }
+
+    stopRecording = function() {
+      recording = false;
+      window.Stream.end();
+    }
+
+    function success(e) {
+      audioContext = window.AudioContext || window.webkitAudioContext;
+      context = new audioContext();
+
+      // the sample rate is in context.sampleRate
+      audioInput = context.createMediaStreamSource(e);
+
+      var bufferSize = 2048;
+      recorder = context.createScriptProcessor(bufferSize, 1, 1);
+
+      recorder.onaudioprocess = function(e){
+        if(!recording) return;
+        console.log ('recording');
+        var left = e.inputBuffer.getChannelData(0);
+        window.Stream.write(convertoFloat32ToInt16(left));
+      }
+
+      audioInput.connect(recorder)
+      recorder.connect(context.destination); 
+    }
+
+    function convertoFloat32ToInt16(buffer) {
+      var l = buffer.length;
+      var buf = new Int16Array(l)
+
+      while (l--) {
+        buf[l] = buffer[l]*0xFFFF;    //convert to 16 bit
+      }
+      return buf.buffer
+    }
+  });
+
+
+
+
   function chngimg() {
         var img = document.getElementById('imgplus').src;
         if (img.indexOf('dictation-toggle-icon.png')!=-1) {
+          stopRecording();
             document.getElementById('imgplus').src  = 'Images/dictation-icon.png';
         }
          else {
+          startRecording();
            document.getElementById('imgplus').src = 'Images/dictation-toggle-icon.png';
        }
 
     }
 </script>
+<!-- <script type='text/javascript' src="/javascripts/recorder.js" /> -->
   </head>
   <body onload = "init()">
 <div  class="col-md-12 jumbotron">
