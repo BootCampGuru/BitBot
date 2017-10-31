@@ -16,7 +16,7 @@ var TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
 var fs = require('fs');
 var tts = watson.text_to_speech(auth.text_to_speech);
 var translator = watson.language_translation(auth.language_translation);
-var reader = new wav.Reader();
+
 
 
 var textToSpeech = new TextToSpeechV1(
@@ -284,52 +284,71 @@ else
 response.output.text = response.output.text + addLink + featureNames;
 
 
-translator.translate({
-text : response.output.text + addLink + featureNames,
-source:"en",
-target:"es"
-}, function(err, result){
-   if(err) {
-   return console.log(err);
-    }
-    //console.log(result.translations[0].translation);
+// translator.translate({
+// text : response.output.text + addLink + featureNames,
+// source:"en",
+// target:"es"
+// }, function(err, result){
+//    if(err) {
+//    return console.log(err);
+//     }
+//     //console.log(result.translations[0].translation);
 
 
-const getFileExtension = (acceptQuery) => {
-  const accept = acceptQuery || '';
-  switch (accept) {
-    case 'audio/ogg;codecs=opus':
-    case 'audio/ogg;codecs=vorbis':
-      return 'ogg';
-    case 'audio/wav':
-      return 'wav';
-    case 'audio/mpeg':
-      return 'mpeg';
-    case 'audio/webm':
-      return 'webm';
-    case 'audio/flac':
-      return 'flac';
-    default:
-      return 'mp3';
-  }
-};
+// const getFileExtension = (acceptQuery) => {
+//   const accept = acceptQuery || '';
+//   switch (accept) {
+//     case 'audio/ogg;codecs=opus':
+//     case 'audio/ogg;codecs=vorbis':
+//       return 'ogg';
+//     case 'audio/wav':
+//       return 'wav';
+//     case 'audio/mpeg':
+//       return 'mpeg';
+//     case 'audio/webm':
+//       return 'webm';
+//     case 'audio/flac':
+//       return 'flac';
+//     default:
+//       return 'mp3';
+//   }
+// };
 
 
+
+
+//   });
+
+
+var wstream = fs.createWriteStream('HelloWatson.wav');
+
+wstream.on('finish', function(){
+  
+  var reader = new wav.Reader();
+
+  var file = fs.createReadStream('HelloWatson.wav');
+
+  reader.on('format', function (format) {
+ 
+  // the WAVE header is stripped from the output of the reader 
+  reader.pipe(new Speaker(format));
+});
+ 
+// pipe the WAVE file to the Reader instance 
+file.pipe(reader);
+
+
+})
 
 
 textToSpeech.synthesize(
 {
   text: response.output.text,
-  voice: 'en-GB_KateVoice',
+  voice: 'en-US_AllisonVoice',
   accept: 'audio/wav'
 }
-  ).pipe(reader).on('format', function(format){
-    console.log(format);
-    reader.pipe(new Speaker(format));
-  });
+  ).pipe(wstream);
 
-
-  });
 
 
 res.json(response);

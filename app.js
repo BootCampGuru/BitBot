@@ -88,27 +88,27 @@ app.use('/getnewstudents', getnewstudents);
 
 //listen
 
-binaryServer = BinaryServer({port: 9001});
+// binaryServer = BinaryServer({port: 9001});
 
-binaryServer.on('connection', function(client) {
-  console.log('new connection');
+// binaryServer.on('connection', function(client) {
+//   console.log('new connection');
 
-  var fileWriter = new wav.FileWriter(outFile, {
-    channels: 1,
-    sampleRate: 48000,
-    bitDepth: 16
-  });
+//   var fileWriter = new wav.FileWriter(outFile, {
+//     channels: 1,
+//     sampleRate: 48000,
+//     bitDepth: 16
+//   });
 
-  client.on('stream', function(stream, meta) {
-    console.log('new stream');
-    stream.pipe(fileWriter);
+//   client.on('stream', function(stream, meta) {
+//     console.log('new stream');
+//     stream.pipe(fileWriter);
 
-    stream.on('end', function() {
-      fileWriter.end();
-      console.log('wrote to file ' + outFile);
-    });
-  });
-  });
+//     stream.on('end', function() {
+//       fileWriter.end();
+//       console.log('wrote to file ' + outFile);
+//     });
+//   });
+//   });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -151,11 +151,11 @@ sendMessage();
   function chngimg() {
         var img = document.getElementById('imgplus').src;
         if (img.indexOf('dictation-toggle-icon.png')!=-1) {
-          stopRecording();
+          //stopRecording();
             document.getElementById('imgplus').src  = 'Images/dictation-icon.png';
         }
          else {
-          startRecording();
+         // startRecording();
            document.getElementById('imgplus').src = 'Images/dictation-toggle-icon.png';
        }
 
