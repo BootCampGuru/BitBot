@@ -1,11 +1,10 @@
----
 applications:
   services:
     - campbottranslator
     - campbotspeech
     - campbotconvo
     - campbot
- - name: BitBotChamp
+   name: BitBotChamp
    command: npm start
    path: .
    random-route: true
