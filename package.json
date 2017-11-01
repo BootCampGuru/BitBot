@@ -2,7 +2,8 @@
   "name": "bitbot",
   "version": "0.0.0",
   "private": true,
-  "engines" : {"node" : "6.11.4"},
+  "engines" : {"node" : "6.11.4",
+  "npm" : "5.5.1"},
   "scripts": {
     "start": "node ./bin/www"
   },
