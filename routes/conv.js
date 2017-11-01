@@ -5,7 +5,6 @@ var watson = require('watson-developer-cloud');
 var db = require('node-mysql');
 var sqldb = require('mysql');
 var wav = require('wav');
-var Speaker = require('speaker');
 var router = express.Router();
 var jsonParser = bodyParser.json();
 var validator = require("email-validator");
@@ -337,7 +336,7 @@ memStream.on('end', function(){
   reader.on('format', function (format) {
  
   // the WAVE header is stripped from the output of the reader 
-  reader.pipe(new Speaker(format));
+  //reader.pipe(new Speaker(format));
 });
  
 // pipe the WAVE file to the Reader instance 
@@ -359,7 +358,7 @@ wstream.on('finish', function(){
   reader.on('format', function (format) {
  
   // the WAVE header is stripped from the output of the reader 
-  reader.pipe(new Speaker(format));
+ // reader.pipe(new Speaker(format));
 });
  
 // pipe the WAVE file to the Reader instance 

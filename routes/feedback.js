@@ -5,7 +5,7 @@ var watson = require('watson-developer-cloud');
 var db = require('node-mysql');
 var sqldb = require('mysql');
 var wav = require('wav');
-var Speaker = require('speaker');
+//var Speaker = require('speaker');
 var SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
 
 var router = express.Router();
