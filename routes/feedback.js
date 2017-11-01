@@ -4,6 +4,9 @@ var bodyParser = require('body-parser');
 var watson = require('watson-developer-cloud');
 var db = require('node-mysql');
 var sqldb = require('mysql');
+var wav = require('wav');
+var Speaker = require('speaker');
+var SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
 
 var router = express.Router();
 var jsonParser = bodyParser.json();
@@ -11,15 +14,22 @@ var conversation = watson.conversation(auth.watson.conversation);
 
 var featureCollection = [];
 
+var SpeechToText = new SpeechToTextV1(
+{
+  username: 'ea666f48-2f84-4475-92f1-c24ff5c6322f',
+  password: 'WJnTPL7L5TlG'
+});
+
+
 function transaction(feed)
 {
 
  var connection = sqldb.createConnection({
-  host: "localhost",
+  host: "rocklobster.cmglveqlnmr0.us-east-1.rds.amazonaws.com",
   port: 3306,
-  user: "root",
-  password: "sagat99",
-  database: "bitbot"
+  user: "api_user",
+  password: "ABC123",
+  database: "codingBootcamp_db"
 });
 
 connection.connect(function(err) {
@@ -64,6 +74,7 @@ router.get('/', function(req, res, next) {
 router.post('/', jsonParser, function(req, res,next)
 {
 transaction(req.body.input.text);
+res.send("Feedback sent");
 });
 
 module.exports = router;

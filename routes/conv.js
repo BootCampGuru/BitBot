@@ -62,11 +62,11 @@ cats.forEach(function(cat){
 });
 }
  var connection = sqldb.createConnection({
-  host: "localhost",
+  host: "rocklobster.cmglveqlnmr0.us-east-1.rds.amazonaws.com",
   port: 3306,
-  user: "root",
-  password: "sagat99",
-  database: "bitbot"
+  user: "api_user",
+  password: "ABC123",
+  database: "codingBootcamp_db"
 });
 
 var featureNames = [];

@@ -9,10 +9,14 @@
 
 	function updateChatLog()
 	{
- 
-	document.getElementById("history").value = "Feedback sent";
+
 	document.getElementById("text").value = "";
 
+  var div = document.createElement('div');
+  var p = document.createElement('p');
+  div.innerHTML = 'Feedback sent';
+  document.getElementById("history").appendChild(div);
+  document.getElementById("history").appendChild(p);
 		
 	}
 
@@ -50,16 +54,88 @@ xhr.setRequestHeader("Content-type", "application/json");
 xhr.send(JSON.stringify(payload));
 }
 
+function init()
+{
+
+document.getElementById('usevoice').addEventListener("mousedown", function(e) {
+
+document.getElementById('imgplus').src = 'Images/dictation-toggle-icon.png';
+ fetch('/api/speech-to-text/token').then(function(response) {
+ return response.text();
+ }).then(function (token) {
+ var stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
+
+ token: token,
+ });
+
+ stream.setEncoding('utf8'); // get text instead of Buffers for on data events
+ stream.on('data', function(data) {
+
+ document.querySelector('#text').value =  document.querySelector('#text').value + data;
+
+ });
+ stream.on('error', function(err) {
+ console.log(err);
+ });
+
+ document.querySelector('#usevoice').onmouseup = stream.stop.bind(stream);
+
+document.getElementById('usevoice').addEventListener("mouseup", function(e) {
+  document.getElementById('imgplus').src  = 'Images/dictation-icon.png';
+  
+});
+
+
+ }).catch(function(error) {
+ console.log(error);
+ });
+ });
+
+
+document.getElementById("text").addEventListener("keydown" , function(e)
+{
+  if(!e) { 
+  	var e = window.event;
+  }
+   if(e.KeyCode == 13) {
+   	sendMessage();
+   }
+} ,false);
+
+sendMessage();
+}
+
 </script>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js"></script>
+<script type="text/javascript" src="/javascripts/watson-speech.js"></script>
+
   </head>
-  <body>
+  <body  onload = "init()">
   <div class="col-md-12 jumbotron">
     <p/>
 <div class="col-md-12 offset-md-1" style="color:orange; font-size:26px; background-color:#153260">Feedback Form</div>
 <p/>
+<div  class="col-md-12">
+
+<img id="imgplus" alt="" src="/images/dictation-icon.png" onmouseover="this.style.cursor='pointer'" style="height:50; width:50"  />
+
+</div>
+
+  <div>
+  <div class="col-md-2 col-md-2">
+              <button  type="button" id="usevoice" class="btn-primary btn btn-block use-voice">Speak</button>
+            </div>
+  
+</div> 
 <div style="border:1px;border-radius:10px;" ><input type="text" id="text" name="text" size="100" /> 
 <button class="btn btn-primary" onclick="sendMessage(); return false;">Send</button></div>
-<p/><div id="history"></div>
+<p/>
+
+<div id="history">
+  
+</div>
 </div>
   </body>
 </html>

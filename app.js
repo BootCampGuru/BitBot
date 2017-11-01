@@ -51,7 +51,8 @@ var watsonMiddleware = require('botkit-middleware-watson')({
 var slackController = Botkit.slackbot();
 
 var slackBot = slackController.spawn({
-  token: "xoxb-263434244532-C8aJizzHaofkmA2PCxg6qSZz"
+  token: "xoxb-263434244532-A07gqjVq0nOaWa2Xq5kf0TNu"
+
 });
 
 

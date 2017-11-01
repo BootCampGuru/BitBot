@@ -75,39 +75,39 @@ xhr.send(JSON.stringify(payload));
 function init()
 {
 
-document.getElementById('usevoice').addEventListener("mousedown", function(e) {
+// document.getElementById('usevoice').addEventListener("mousedown", function(e) {
 
-document.getElementById('imgplus').src = 'Images/dictation-toggle-icon.png';
- fetch('/api/speech-to-text/token').then(function(response) {
- return response.text();
- }).then(function (token) {
- var stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
+// document.getElementById('imgplus').src = 'Images/dictation-toggle-icon.png';
+//  fetch('/api/speech-to-text/token').then(function(response) {
+//  return response.text();
+//  }).then(function (token) {
+//  var stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
 
- token: token,
- });
+//  token: token,
+//  });
 
- stream.setEncoding('utf8'); // get text instead of Buffers for on data events
- stream.on('data', function(data) {
+//  stream.setEncoding('utf8'); // get text instead of Buffers for on data events
+//  stream.on('data', function(data) {
 
- document.querySelector('#text').value = data;
+//  document.querySelector('#text').value = data;
 
- });
- stream.on('error', function(err) {
- console.log(err);
- });
+//  });
+//  stream.on('error', function(err) {
+//  console.log(err);
+//  });
 
- document.querySelector('#usevoice').onmouseup = stream.stop.bind(stream);
+//  document.querySelector('#usevoice').onmouseup = stream.stop.bind(stream);
 
-document.getElementById('usevoice').addEventListener("mouseup", function(e) {
-  document.getElementById('imgplus').src  = 'Images/dictation-icon.png';
+// document.getElementById('usevoice').addEventListener("mouseup", function(e) {
+//   document.getElementById('imgplus').src  = 'Images/dictation-icon.png';
   
-});
+// });
 
 
- }).catch(function(error) {
- console.log(error);
- });
- });
+//  }).catch(function(error) {
+//  console.log(error);
+//  });
+ //});
 
 
 document.getElementById("text").addEventListener("keydown" , function(e)
@@ -154,19 +154,6 @@ sendMessage();
 
 <div class="col-md-10 offset-md-5"><input id="text" type="text" id="text" name="text" size="100" /> 
 <button  class="btn btn-primary" onclick="sendMessage()">Send</button></div>
-<div  class="col-md-12">
-
-<img id="imgplus" alt="" src="/images/dictation-icon.png" onmouseover="this.style.cursor='pointer'" style="height:50; width:50"  />
-
-</div>
-
-  <div>
-  <div class="col-md-2 col-md-2">
-              <button  type="button" id="usevoice" class="btn-primary btn btn-block use-voice">Speak</button>
-            </div>
-  
-</div> 
-
 
 <div class="col-md-12" style="color:orange; font-size:26px; background-color:#153260"><b>Conversation History</b></div>
 <p/><div style="border:1px;border-radius:10px;" class="col-md-12" id="history" ></div>
