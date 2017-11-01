@@ -2,6 +2,7 @@
   "name": "bitbot",
   "version": "0.0.0",
   "private": true,
+  "engines" : {"node" : "6.11.4"},
   "scripts": {
     "start": "node ./bin/www"
   },
