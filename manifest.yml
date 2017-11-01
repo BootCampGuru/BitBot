@@ -4,7 +4,7 @@ applications:
     - campbotspeech
     - campbotconvo
     - campbot
-   name: BitBotChamp
+   name: BitBotChamp1
    command: npm start
    path: .
    random-route: true
