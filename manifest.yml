@@ -1,11 +1,9 @@
 applications:
-  services:
-    - campbottranslator
-    - campbotspeech
-    - campbotconvo
-    - campbot
-   name: BitBotChamp1
-   command: npm start
-   path: .
-   random-route: true
-   memory: 256M
+- name: bluemix-todo-bitbot
+memory: 256M
+command: npm start
+services:
+- campbottranslator
+- campbotspeech
+- campbotconvo
+- campbot
