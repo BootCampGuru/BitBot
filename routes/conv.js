@@ -22,8 +22,8 @@ var translator = watson.language_translation(auth.language_translation);
 var textToSpeech = new TextToSpeechV1(
 {
 
-  username: '760336dc-2f5a-4b8f-8477-702bf388de04',
-  password: '85VR4gy3S0vR'
+  username: '',
+  password: ''
 });
 
 
@@ -31,8 +31,8 @@ var textToSpeech = new TextToSpeechV1(
 var SpeechToText = new SpeechToTextV1(
 {
 
-  username: 'ea666f48-2f84-4475-92f1-c24ff5c6322f',
-  password: 'WJnTPL7L5TlG'
+  username: '',
+  password: ''
 });
 
 
