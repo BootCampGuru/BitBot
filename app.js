@@ -24,8 +24,8 @@ varvcapServices = require('vcap_services');
 var config ={
   version: 'v1',
   url: 'https://stream.watsonplatform.net/speech-to-text/api',
-  username: 'ea666f48-2f84-4475-92f1-c24ff5c6322f',
-  password: 'WJnTPL7L5TlG'
+  username: '',
+  password: ''
 };
 
 // var credentials = extend(config, bluemix.getServiceCreds('speech_to_text'));
@@ -41,9 +41,9 @@ var config ={
 
 
 var watsonMiddleware = require('botkit-middleware-watson')({
-  username: "3857edc0-18b2-431d-b612-d36a45c5db66",
-  password: "yy4QdeR6Teve",
-  workspace_id: "25f58a86-15b7-4f14-8d02-8dd328e2a062",
+  username: "",
+  password: "",
+  workspace_id: "",
   version_date: "2017-05-26",
   minimum_confidence: 0.50, // (Optional) Default is 0.75
 });
@@ -51,7 +51,7 @@ var watsonMiddleware = require('botkit-middleware-watson')({
 var slackController = Botkit.slackbot();
 
 var slackBot = slackController.spawn({
-  token: "xoxb-263434244532-A07gqjVq0nOaWa2Xq5kf0TNu"
+  token: ""
 
 });
 
