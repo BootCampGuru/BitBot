@@ -16,8 +16,8 @@ var featureCollection = [];
 
 var SpeechToText = new SpeechToTextV1(
 {
-  username: 'ea666f48-2f84-4475-92f1-c24ff5c6322f',
-  password: 'WJnTPL7L5TlG'
+  username: '',
+  password: ''
 });
 
 
@@ -25,11 +25,11 @@ function transaction(feed)
 {
 
  var connection = sqldb.createConnection({
-  host: "rocklobster.cmglveqlnmr0.us-east-1.rds.amazonaws.com",
+  host: "",
   port: 3306,
-  user: "api_user",
-  password: "ABC123",
-  database: "codingBootcamp_db"
+  user: "",
+  password: "",
+  database: ""
 });
 
 connection.connect(function(err) {
